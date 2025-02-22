@@ -1,0 +1,31 @@
+```
+└── 📁src
+    └── 📁config
+        └── database.config.ts
+    └── 📁controllers
+        └── comment.controller.ts
+        └── event.controller.ts
+        └── user.controller.ts
+    └── 📁interfaces
+        └── comment.interface.ts
+        └── event.interface.ts
+        └── index.ts
+        └── user.interface.ts
+    └── 📁middlewares
+        └── validate.middleware.ts
+    └── 📁models
+        └── comment.model.ts
+        └── event.model.ts
+        └── user.model.ts
+    └── 📁routes
+        └── event.route.ts
+        └── index.ts
+        └── user.route.ts
+    └── 📁services
+        └── event.service.ts
+        └── user.service.ts
+    └── 📁utils
+        └── event.util.ts
+    └── app.ts
+    └── main.ts
+```
