@@ -1,6 +1,26 @@
 import { z } from "zod";
 import { Types } from "mongoose";
 
+import { Request, Response, NextFunction } from "express";
+import { ZodSchema } from "zod";
+
+export const validate = (schema: ZodSchema) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const result = schema.safeParse(req.body);
+    
+    if (!result.success) {
+       res.status(400).json({ errors: result.error.format() });
+       return
+    }
+
+    next(); // Si les données sont valides, on passe à la suite
+  };
+};
+
+
+
+
+
 // Fonction pour valider un ObjectId
 const objectIdSchema = z
   .string()

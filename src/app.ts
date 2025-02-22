@@ -7,6 +7,7 @@ import router from "./routes/index"; // Assure-toi du bon chemin
 const app = express();
 
 app.use(express.json()); // 🛠️ Active le middleware JSON
+app.use(cookieParser()); // 🛠️ Active le middleware cookie-parser
 
 app.use(
   cors({

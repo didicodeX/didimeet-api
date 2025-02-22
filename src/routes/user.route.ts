@@ -1,12 +1,10 @@
 import { Router } from "express";
 import { UserController } from "../controllers/user.controller";
-import { UserService } from "../services/user.service";
+import { authenticate } from "../middlewares/auth.middleware";
 
 const router = Router();
+const userController = new UserController();
 
-const userService = new UserService();
-const userController = new UserController(userService)
-
-router.post("/", (req,res) => userController.createUser(req,res))
+router.get("/profile", authenticate, (req, res) => userController.profile(req, res));
 
 export default router;
