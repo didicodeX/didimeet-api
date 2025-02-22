@@ -1,6 +1,5 @@
 import { EventService } from "../services/event.service";
 import { Request, Response } from "express";
-import { eventSchema } from "../utils/event.util";
 
 export class EventController {
   private eventService: EventService;
@@ -18,3 +17,4 @@ export class EventController {
     }
   }
 }
+  
