@@ -1,5 +1,5 @@
 // Charger les variables d'environnement
-import "dotenv/config"; // Pas besoin d'utiliser `require`
+import "dotenv/config"; 
 
 // Importer l'application
 import app from "./app";

@@ -1,7 +1,11 @@
-import {Router, Response, Request} from "express"
-
+import { Router, Response, Request } from "express";
+import eventRoutes from "./event.route";
 const router = Router();
 
-router.use("/", async(res:Response, req:Request) => {
-  res.send("Yo la famille")
-})
+router.get("/", (req: Request, res: Response) => {
+  res.send("<h1>Hello world</h1>");
+});
+
+router.use("/events", eventRoutes)
+
+export default router;
