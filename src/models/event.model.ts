@@ -1,7 +1,7 @@
 import { Schema, model, Document } from "mongoose";
 
 // Définition de l'interface TypeScript
-export interface IEvent extends Document {
+export interface Event extends Document {
   title: string;
   description: string;
   date: Date;
@@ -14,7 +14,7 @@ export interface IEvent extends Document {
 }
 
 // Définition du schéma Mongoose
-const EventSchema = new Schema<IEvent>(
+const EventSchema = new Schema<Event>(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
@@ -29,5 +29,5 @@ const EventSchema = new Schema<IEvent>(
   { timestamps: true }
 );
 
-const EventModel = model<IEvent>("Event", EventSchema);
+const EventModel = model<Event>("Event", EventSchema);
 export default EventModel;

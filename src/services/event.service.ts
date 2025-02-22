@@ -1,7 +1,7 @@
-import EventModel, { IEvent } from "../models/event.model.js";
+import EventModel, { Event } from "../models/event.model.js";
 
 export class EventService {
-  async createEvent(eventData: Partial<IEvent>) {
+  async createEvent(eventData:Event) {
     // 🔍 Vérifier si l'événement existe déjà
     const existingEvent = await EventModel.findOne({ title: eventData.title });
     if (existingEvent) {
