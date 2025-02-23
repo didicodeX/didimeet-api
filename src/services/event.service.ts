@@ -1,7 +1,7 @@
-import EventModel, { Event } from "../models/event.model.js";
-
+import {EventModel} from "../models/event.model.js";
+import { EventInterface } from "../interfaces/event.interface.js";
 export class EventService {
-  async createEvent(eventData:Event) {
+  async createEvent(eventData:EventInterface) {
     // 🔍 Vérifier si l'événement existe déjà
     const existingEvent = await EventModel.findOne({ title: eventData.title });
     if (existingEvent) {

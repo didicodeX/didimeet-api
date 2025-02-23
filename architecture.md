@@ -41,3 +41,11 @@
     └── README.md
     └── tsconfig.json
 ```
+
+cd api
+$ git init
+$ git remote add origin https://github.com/RusselTano/EMS_api.git
+$ npm init
+$ npm i dotenv express mongoose bcrypt jsonwebtoken cookie-parser cors nodemon
+$ npm install -D concurrently typescript
+$ npm i --save-dev @types/express

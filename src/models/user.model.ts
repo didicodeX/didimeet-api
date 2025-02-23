@@ -1,20 +1,13 @@
-import { Schema, model, InferSchemaType } from "mongoose";
+import { Schema, model } from "mongoose";
+import { UserInterface } from "../interfaces";
 
-const UserSchema = new Schema(
+const UserSchema = new Schema<UserInterface>(
   {
     name: { type: String },
     email: { type: String, unique: true, required: true },
     password: { type: String },
-    address: {
-      street: { type: String },
-      city: { type: String },
-      country: { type: String },
-    },
-    registeredEvents: [{ type: Schema.Types.ObjectId, ref: "Event" }],
   },
   { timestamps: true }
 );
 
-type UserType = InferSchemaType<typeof UserSchema>;
-
-export const UserModel = model<UserType>("User", UserSchema); // Collection : "users"
+export const UserModel = model<UserInterface>("User", UserSchema);
