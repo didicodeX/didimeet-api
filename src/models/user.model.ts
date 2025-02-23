@@ -6,6 +6,7 @@ const UserSchema = new Schema<UserInterface>(
     name: { type: String },
     email: { type: String, unique: true, required: true },
     password: { type: String },
+    role: {type: String, enum: ["Admin","Organizer","Participant"],default:"Participant"}
   },
   { timestamps: true }
 );

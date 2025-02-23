@@ -5,9 +5,14 @@ export interface AuthRequest extends Request {
   user?: any;
 }
 
-export const authenticate = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authenticate = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const token = req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
+    const token =
+      req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
 
     if (!token) {
       res.status(401).json({ message: "Accès refusé. Token manquant ❌" });

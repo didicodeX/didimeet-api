@@ -25,25 +25,13 @@ export class UserService {
     return await UserModel.findById(id);
   }
 
-  async updateUser(id: string, userData: Partial<UserInterface>, isPartial: boolean = true) {
-    // Récupérer l'utilisateur actuel pour éviter d'écraser des champs avec `undefined`
-    if (isPartial) {
-      const existingUser = await UserModel.findById(id);
-      if (!existingUser) throw new Error("Utilisateur non trouvé");
-  
-      // Fusionner les données existantes avec les nouvelles (évite d'écraser des champs avec `undefined`)
-      userData = { ...existingUser.toObject(), ...userData };
+  async updateUser(id: string, userData: UserInterface) {
+    if(userData.password){
+      userData.password = await bcrypt.hash(userData.password, 10);
     }
-   
-    // Hash du mot de passe s'il est fourni
-    if (userData.password) {
-      const salt = await bcrypt.genSalt(10);
-      userData.password = await bcrypt.hash(userData.password, salt);
-    }
-  
     return await UserModel.findByIdAndUpdate(id, userData, { new: true });
   }
-  
+
   async deleteUser(id: string) {
     return await UserModel.findByIdAndDelete(id);
   }

@@ -45,33 +45,21 @@ export class UserController {
     }
   }
 
-  async updateUserFull(req: Request, res: Response) {
+  async updateUser(req:Request, res:Response){
     try {
-      const { id } = req.params;
-      const userData = req.body;
-  
-      if (!userData.name || !userData.email || !userData.password) {
-        res.status(400).json({ message: "Tous les champs sont requis." });
-        return ;
-      }
-  
-      const updatedUser = await this.userService.updateUser(id, userData, false); // false = mise à jour complète (PUT)
-      res.json(updatedUser);
-    } catch (error: any) {
-      res.status(500).json({ message: error.message });
+      const updatedUser = await this.userService.updateUser(req.params.id,req.body)
+      res.json(updatedUser)
+    } catch (error:any) {
+      res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
   }
-  
-  async updateUserPartial(req: Request, res: Response) {
+
+  async deleteUser(req: Request, res:Response){
     try {
-      const { id } = req.params;
-      const userData = req.body;
-  
-      const updatedUser = await this.userService.updateUser(id, userData, true);
-      res.status(200).json(updatedUser);
-    } catch (error: any) {
-      res.status(500).json({ message: error.message });
+      const deletedUser = await this.userService.deleteUser(req.params.id)
+      res.json(deletedUser)
+    } catch (error:any) {
+      res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
   }
-  
 }

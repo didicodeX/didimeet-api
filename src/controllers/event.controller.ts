@@ -4,8 +4,8 @@ import { Request, Response } from "express";
 export class EventController {
   private eventService: EventService;
 
-  constructor() {
-    this.eventService = new EventService();
+  constructor(eventService:EventService) {
+    this.eventService = eventService;
   }
 
   async createEvent(req: Request, res: Response) {

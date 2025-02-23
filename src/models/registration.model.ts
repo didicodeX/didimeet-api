@@ -5,11 +5,7 @@ const registrationSchema = new Schema<RegistrationInterface>(
   {
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     event: { type: Schema.Types.ObjectId, ref: "Event", required: true },
-    status: {
-      type: String,
-      enum: ["pending", "confirmed", "cancelled"],
-      default: "pending",
-    },
+    status: { type: String, enum: ["pending", "confirmed", "rejected"], default: "pending" },
   },
   { timestamps: true }
 );
