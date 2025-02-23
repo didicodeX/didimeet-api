@@ -1,13 +1,17 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/auth.service";
 
-const authService = new AuthService();
-
 export class AuthController {
+  private authService : AuthService;
+
+  constructor(authService: AuthService){
+    this.authService = authService;
+  }
+
   async register(req: Request, res: Response) {
     try {
       const { name, email, password } = req.body;
-      await authService.register(name, email, password);
+      await this.authService.register(name, email, password);
       res.json({ message: "Compte créé avec succès ✅" });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
@@ -17,7 +21,7 @@ export class AuthController {
   async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
-      const { user, accessToken, refreshToken } = await authService.login(
+      const { user, accessToken, refreshToken } = await this.authService.login(
         email,
         password
       );

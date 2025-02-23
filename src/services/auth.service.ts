@@ -1,23 +1,24 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { UserService } from "./user.service";
-
-const userService = new UserService();
+import { UserInterface } from "../interfaces";
 
 export class AuthService {
-  async register(name: string, email: string, password: string) {
-    const existingUser = await userService.findUserByEmail(email);
-    if (existingUser) throw new Error("Email déjà utilisé ❌");
+  private userService: UserService;
 
-    return await userService.createUser(name, email, password); // ✅ Réutilisation !
+  constructor(userService: UserService) {
+    this.userService = userService;
+  }
+
+  async register(name: string, email: string, password: string): Promise<UserInterface> {
+    return await this.userService.createUser(name, email, password);
   }
 
   async login(email: string, password: string) {
-    const user = await userService.findUserByEmail(email);
+    const user = await this.userService.findUserByEmail(email);
     if (!user) throw new Error("Utilisateur introuvable.");
 
-    // Vérifier le mot de passe
-    if (!user.password) throw new Error("Mot de passe incorrect.");
+
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) throw new Error("Mot de passe incorrect.");
 
