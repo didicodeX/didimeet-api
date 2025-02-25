@@ -6,13 +6,6 @@ export class EventService {
   async createEvent(eventData: EventInterface) {
     const { title, date, organizer } = eventData;
 
-    // // verifie si l'utilisateur existe deja et si il est organisateur
-    // const user = await UserModel.findById(organizer);
-    // if (!user) throw new Error("organizer not found");
-
-    // if ((user.role).toLowerCase() !== "organizer")
-    //   throw new Error("Only organizers can create events");
-
     // 🔍 Vérifier si l'événement existe déjà
     const existingEvent = await EventModel.findOne({ title: title });
     if (existingEvent) {
@@ -25,8 +18,8 @@ export class EventService {
     }
 
     // 🔥 Vérifier si l'utilisateur est déjà `organizer`, sinon le promouvoir
-    const user = await UserModel.findById(organizer );
-    if (user && (user.role).toLowerCase() === "participant") {
+    const user = await UserModel.findById(organizer);
+    if (user && user.role.toLowerCase() === "participant") {
       user.role = "organizer";
       await user.save();
     }
@@ -34,4 +27,33 @@ export class EventService {
     // ✅ Créer l'événement
     return await EventModel.create(eventData);
   }
+
+  async getEvents() {
+    return await EventModel.find();
+  }
+
+  async getEvent(id: string) {
+    return await EventModel.findById(id);
+  }
+
+  async getUserByEmail(email: string) {
+    return await EventModel.findOne({ email });
+  }
+
+  async deleteEvent(eventId: string, userId: string, userRole: string) {
+    // Récupérer l'événement pour vérifier l'auteur
+    const event = await EventModel.findById(eventId);
+    if (!event) {
+      throw new Error("Événement introuvable ❌");
+    }
+  
+    // Vérifier si l'utilisateur est autorisé à supprimer l'événement
+    if (userRole === "organizer" && event.organizer.toString() !== userId) {
+      throw new Error("Vous ne pouvez pas supprimer un événement dont vous n'êtes pas l'auteur ❌");
+    }
+  
+    // Supprimer l'événement
+    return await EventModel.findByIdAndDelete(eventId);
+  }
+  
 }

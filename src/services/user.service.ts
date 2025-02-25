@@ -72,4 +72,21 @@ export class UserService {
       console.log("✅ Super Admin créé avec succès !");
     }
   }
+
+  async updateUserRole(id: string, role: string) {
+    const user = await UserModel.findById(id);
+    if (!user) throw new Error("Utilisateur introuvable ❌");
+
+    if (user.role === "superadmin")
+      throw new Error("Impossible de modifier le Super Admin ❌");
+
+    const updatedUser = await UserModel.findOneAndUpdate(
+      { _id: id },
+      { role },
+      { new: true }
+    );
+    if (!updatedUser) throw new Error("Utilisateur non trouvé");
+
+    return updatedUser;
+  }
 }

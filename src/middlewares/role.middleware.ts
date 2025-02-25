@@ -10,3 +10,8 @@ export const checkRole = (roles: string[]) => {
     next();
   };
 };
+
+/**{
+"email": "sung@didicode.com",
+"password": "123456"
+} */

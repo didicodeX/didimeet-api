@@ -31,15 +31,18 @@ export class UserController {
     try {
       // Vérifier si l'utilisateur est autorisé à modifier ce compte
       if (req.user.role !== "admin" && req.user.id !== req.params.id) {
-         res.status(403).json({ message: "Accès interdit ❌" });
-         return
+        res.status(403).json({ message: "Accès interdit ❌" });
+        return;
       }
 
-      const updatedUser = await this.userService.updateUserPartial(req.params.id, req.body);
+      const updatedUser = await this.userService.updateUserPartial(
+        req.params.id,
+        req.body
+      );
 
       if (!updatedUser) {
         res.status(404).json({ message: "Utilisateur introuvable ❌" });
-        return
+        return;
       }
 
       res.json(updatedUser);
@@ -47,7 +50,7 @@ export class UserController {
       res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
   }
-  
+
   async updateUserFull(req: Request, res: Response) {
     try {
       const updatedUser = await this.userService.updateUserFull(
@@ -73,6 +76,22 @@ export class UserController {
         res.status(404).json({ message: error.message });
         return;
       }
+      res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+  }
+
+  async updateUserRole(req: Request, res: Response) {
+    try {
+      const { role } = req.body;
+      const { id } = req.params;
+
+      if (!["admin", "organizer", "participant"].includes(role)) {
+        res.status(400).json({ message: "Rôle invalide" });
+        return;
+      }
+      const updatedUser = await this.userService.updateUserRole(id, role);
+      res.json({ message: `✅ Rôle mis à jour : ${updatedUser.role}` });
+    } catch (error: any) {
       res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
   }

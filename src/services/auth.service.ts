@@ -23,13 +23,13 @@ export class AuthService {
     if (!isPasswordCorrect) throw new Error("Mot de passe incorrect.");
 
     const accessToken = jwt.sign(
-      { id: user._id, email: user.email, name: user.name },
+      { id: user._id, email: user.email, name: user.name, role: user.role },
       process.env.JWT_SECRET as string,
       { expiresIn: "24h" }
     );
 
     const refreshToken = jwt.sign(
-      { id: user._id, email: user.email, name: user.name },
+      { id: user._id, email: user.email, name: user.name, role: user.role },
       process.env.JWT_SECRET as string,
       { expiresIn: "7d" }
     );
