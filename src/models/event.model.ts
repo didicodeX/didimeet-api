@@ -1,33 +1,19 @@
-import { Schema, model, Document } from "mongoose";
-
-// Définition de l'interface TypeScript
-export interface Event extends Document {
-  title: string;
-  description: string;
-  date: Date;
-  organizer: Schema.Types.ObjectId;
-  participants: Schema.Types.ObjectId[];
-  details: {
-    location: string;
-    duration: number;
-  };
-}
+import { Schema, model } from "mongoose";
+import { EventInterface } from "../interfaces/event.interface";
 
 // Définition du schéma Mongoose
-const EventSchema = new Schema<Event>(
+const EventSchema = new Schema<EventInterface>(
   {
     title: { type: String, required: true },
-    description: { type: String, required: true },
-    date: { type: Date, required: true },
+    date: { type: Date, required: true, default: Date.now },
     organizer: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    participants: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    details: {
-      location: { type: String, required: true },
-      duration: { type: Number, required: true },
+    status: {
+      type: String,
+      enum: ["Pending", "Confirmed", "Cancelled"],
+      default: "Pending",
     },
   },
   { timestamps: true }
 );
 
-const EventModel = model<Event>("Event", EventSchema);
-export default EventModel;
+export const EventModel = model<EventInterface>("Event", EventSchema);

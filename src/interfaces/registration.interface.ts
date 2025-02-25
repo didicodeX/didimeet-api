@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
-export interface CommentInterface {
+export interface RegistrationInterface {
   user: Types.ObjectId,
   event: Types.ObjectId,
-  content: string
+  status: string
 }
