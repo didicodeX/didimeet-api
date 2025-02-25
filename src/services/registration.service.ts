@@ -21,15 +21,10 @@ export class RegistrationService {
       user: registrationData.user,
       event: registrationData.event,
     });
+
     if (existingRegistration)
       throw new Error("User already registered for this event");
 
-    // Inscription
-    // const registration = new RegistrationModel({
-    //   user: registrationData.user,
-    //   event: registrationData.event,
-    // });
-    // await registration.save();
 
     const registration = await RegistrationModel.create({
       user: registrationData.user,
@@ -53,7 +48,7 @@ export class RegistrationService {
     // Suppression de l'inscription
     await RegistrationModel.deleteOne({ user: userId, event: eventId });
 
-    return { message: "User successfully unregistered" };
+    return registration;
   }
 
   async updateRegistrationStatus(registrationData: RegistrationInterface) {
@@ -62,8 +57,6 @@ export class RegistrationService {
     const status =registrationData.status;
 
     const event = await EventModel.findById(eventId);
-    const user = await UserModel.findById(userId);
-    const organizer = event?.organizer;
     if (!event) throw new Error("Event not found");
 
 
@@ -80,4 +73,17 @@ export class RegistrationService {
 
     return registration;
   }
+
+    /**
+   * 🔹 Récupérer tous les utilisateurs inscrits à un événement
+   */
+    async getUsersForEvent(eventId: string) {
+      // Chercher les inscriptions liées à cet événement
+      const registrations = await RegistrationModel.find({ event: eventId }).populate("user", "name email");
+  
+      // Extraire uniquement les utilisateurs
+      const users = registrations.map(registration => registration.user);
+  
+      return users;
+    }
 }

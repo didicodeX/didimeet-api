@@ -12,3 +12,5 @@ export const loginSchema = z.object({
   email: z.string().email("L'email n'est pas valide."),
   password: z.string().min(6, "Le mot de passe doit contenir au moins 6 caractères."),
 });
+
+export type u = z.infer<typeof registerSchema>

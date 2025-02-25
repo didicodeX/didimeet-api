@@ -3,6 +3,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 
 import router from "./routes/index"; // Assure-toi du bon chemin
+import { UserService } from "./services/user.service";
+
 const app = express();
 
 app.use(express.json()); // 🛠️ Active le middleware JSON
@@ -15,6 +17,9 @@ app.use(
     credentials: true,
   })
 );
+
+const userService = new UserService();
+userService.createSuperAdminIfNotExists()
 
 // Routes
 app.use("/", router); // Monte le routeur

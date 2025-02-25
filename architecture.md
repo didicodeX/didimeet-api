@@ -49,3 +49,14 @@ $ npm init
 $ npm i dotenv express mongoose bcrypt jsonwebtoken cookie-parser cors nodemon
 $ npm install -D concurrently typescript
 $ npm i --save-dev @types/express
+
+ Récupérer les utilisateurs inscrits à un événement	/event/:eventId/participants	GET
+🔍 Récupérer les événements d'un utilisateur	/user/:userId/events	GET
+✅ Vérifier si un utilisateur est inscrit	/event/:eventId/user/:userId/check	GET
+🔍 Voir événements passés et à venir	/user/:userId/events/status	GET
+🔢 Compter le nombre d’inscriptions	/event/:eventId/registrations/count	GET
+
+https://dev.to/alexmercedcoder/mongodb-relationships-using-mongoose-in-nodejs-54cc
+https://medium.com/@brandon.lau86/one-to-many-relationships-with-mongodb-and-mongoose-in-node-express-d5c9d23d93c2
+https://dev.to/oluseyeo/how-to-create-relationships-with-mongoose-and-node-js-11c8
+https://medium.com/@arif.rahman.rhm/how-to-build-a-rest-api-with-mongodb-and-mongoose-in-node-js-tips-and-tricks-157bfaed33ce

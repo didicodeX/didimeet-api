@@ -6,12 +6,12 @@ export class EventService {
   async createEvent(eventData: EventInterface) {
     const { title, date, organizer } = eventData;
 
-    // verifie si l'utilisateur existe deja et si il est organisateur
-    const user = await UserModel.findById(organizer);
-    if (!user) throw new Error("organizer not found");
+    // // verifie si l'utilisateur existe deja et si il est organisateur
+    // const user = await UserModel.findById(organizer);
+    // if (!user) throw new Error("organizer not found");
 
-    if ((user.role).toLowerCase() !== "organizer")
-      throw new Error("Only organizers can create events");
+    // if ((user.role).toLowerCase() !== "organizer")
+    //   throw new Error("Only organizers can create events");
 
     // 🔍 Vérifier si l'événement existe déjà
     const existingEvent = await EventModel.findOne({ title: title });
@@ -22,6 +22,13 @@ export class EventService {
     // 🔍 Vérifier que la date est valide
     if (date && new Date(date) < new Date()) {
       throw new Error("La date doit être dans le futur");
+    }
+
+    // 🔥 Vérifier si l'utilisateur est déjà `organizer`, sinon le promouvoir
+    const user = await UserModel.findById(organizer );
+    if (user && (user.role).toLowerCase() === "participant") {
+      user.role = "organizer";
+      await user.save();
     }
 
     // ✅ Créer l'événement
