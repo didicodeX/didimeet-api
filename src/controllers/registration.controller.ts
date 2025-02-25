@@ -9,10 +9,12 @@ export class RegistrationController {
     this.registrationService = registrationService;
   }
 
-  async registerToEvent(req: Request, res: Response) {
+  async registerToEvent(req: AuthRequest, res: Response) {
     try {
+
       const registration = await this.registrationService.registerUser(
-        req.body
+        req.user.id,
+        req.body.event
       );
       res.json({ message: "User successfully registered", registration });
     } catch (error: any) {
@@ -38,9 +40,11 @@ export class RegistrationController {
   async updateRegistrationStatus(req: Request, res: Response) {
     try {
       const { status } = req.body;
+      const registrationId = req.params.id;
+console.log(status, "\n", registrationId);
 
       const registration =
-        await this.registrationService.updateRegistrationStatus(req.body);
+        await this.registrationService.updateRegistrationStatus(registrationId,status);
       res.json({ message: `Registration ${status}`, registration });
     } catch (error: any) {
       res.status(400).json({ message: "Erreur serveur", error: error.message });

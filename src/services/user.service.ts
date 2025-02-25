@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { isValidObjectId } from "mongoose";
 import { UserInterface } from "../interfaces";
 import { UserModel } from "../models/user.model";
+import { EventModel } from "../models/event.model";
 
 export class UserService {
   async createUser(name: string, email: string, password: string) {
@@ -89,4 +90,7 @@ export class UserService {
 
     return updatedUser;
   }
+
+
+  
 }

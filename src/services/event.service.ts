@@ -1,10 +1,11 @@
 import { EventModel } from "../models/event.model.js";
 import { EventInterface } from "../interfaces/event.interface.js";
 import { UserModel } from "../models/user.model.js";
+import { RegistrationModel } from "../models/registration.model.js";
 
 export class EventService {
-  async createEvent(eventData: EventInterface) {
-    const { title, date, organizer } = eventData;
+  async createEvent(userId:string,eventData: EventInterface) {
+    const { title, date } = eventData;
 
     // 🔍 Vérifier si l'événement existe déjà
     const existingEvent = await EventModel.findOne({ title: title });
@@ -17,24 +18,53 @@ export class EventService {
       throw new Error("La date doit être dans le futur");
     }
 
-    // 🔥 Vérifier si l'utilisateur est déjà `organizer`, sinon le promouvoir
-    const user = await UserModel.findById(organizer);
-    if (user && user.role.toLowerCase() === "participant") {
-      user.role = "organizer";
-      await user.save();
-    }
+
+    // eventData.organizer = 
 
     // ✅ Créer l'événement
-    return await EventModel.create(eventData);
+    return await EventModel.create({
+      ...eventData,
+      organizer: userId, // 🚀 Ajout automatique de l'organisateur
+    });;
   }
 
   async getEvents() {
     return await EventModel.find();
   }
 
+  // 🚀 1️⃣ Récupérer les événements créés par un utilisateur (organisateur)
+  async getEventsCreatedByUser(userId: string) {
+    return await EventModel.find({ organizer: userId });
+  }
+
   async getEvent(id: string) {
     return await EventModel.findById(id);
   }
+
+  // 🚀 2️⃣ Récupérer les événements auxquels un utilisateur est inscrit
+  async getEventsForUser(userId: string) {
+    // Récupérer les inscriptions confirmées de l'utilisateur
+    const registrations = await RegistrationModel.find({
+      user: userId,
+      status: "confirmed", // Filtrer uniquement les inscriptions validées
+    }).populate("event");
+  // console.log(registrations);
+  
+    // Extraire uniquement les événements
+    return registrations.map((r) => r.event);
+  }
+
+  //🚀 3️⃣ Récupérer tous les événements liés à un utilisateur (créés + inscrits)
+  async getAllEventsForUser(userId: string) {
+    const createdEvents = await this.getEventsCreatedByUser(userId);
+    const registeredEvents = await this.getEventsForUser(userId);
+  
+    return {
+      created: createdEvents,
+      registered: registeredEvents,
+    };
+  }
+  
 
   async getUserByEmail(email: string) {
     return await EventModel.findOne({ email });

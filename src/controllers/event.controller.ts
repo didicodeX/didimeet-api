@@ -9,9 +9,10 @@ export class EventController {
     this.eventService = eventService;
   }
 
-  async createEvent(req: Request, res: Response) {
+  async createEvent(req: AuthRequest, res: Response) {
     try {
-      const event = await this.eventService.createEvent(req.body);
+      const userId =  req.user.id;
+      const event = await this.eventService.createEvent(userId,req.body);
       res.status(201).json(event);
     } catch (error: Error | any) {
       res.status(500).json({ message: error.message });
@@ -27,6 +28,24 @@ export class EventController {
     }
   }
 
+  async getEventsForUser(req:AuthRequest,res:Response){
+    try {
+      const events = await this.eventService.getEventsForUser(req.user.id);
+      res.json(events);
+    } catch (error: any) {
+      res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+  }
+  
+  async getAllEventsForUser(req:AuthRequest,res:Response){
+    try {
+      const events = await this.eventService.getAllEventsForUser(req.user.id);
+      res.json(events);
+    } catch (error:any) {
+      res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+  }
+
   async getEvent(req: Request, res: Response) {
     try {
       const event = await this.eventService.getEvent(req.params.id);
@@ -35,7 +54,14 @@ export class EventController {
       res.status(500).json({ message: error.message });
     }
   }
-
+  async getEventsCreatedByUser(req: AuthRequest, res:Response){
+    try {
+      const events = await this.eventService.getEventsCreatedByUser(req.user.id)
+      res.json(events)
+    } catch (error: any) {
+      res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+  }
   async deleteEvent(req: AuthRequest, res: Response) {
     try {
       console.log("req.user.id : ", req.user.id, "\nreq.params.id : ", req.params.id);

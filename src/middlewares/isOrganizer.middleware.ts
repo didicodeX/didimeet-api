@@ -10,7 +10,14 @@ export const isOrganizer = async (
   try {
     const eventId = req.body.event; // On récupère l'ID de l'événement depuis la requête
     const userId = req.user.id; // L'ID de l'utilisateur connecté (extrait du JWT)
-    console.log("\neventId : \n", eventId, "\nuserId : \n", userId);
+    const role = req.user.role;
+
+    // console.log(
+    //   "\neventId : \n",
+    //   eventId,
+    //   "\nuserId : \n",
+    //   userId
+    // );
 
     // Vérifier si l'événement existe
     const event = await EventModel.findById(eventId);
@@ -19,13 +26,13 @@ export const isOrganizer = async (
       return;
     }
 
+    //  console.log(eventId,"\n",userId,"\n",role);
+
     // Vérifier si l'utilisateur connecté est bien l'organisateur de l'événement
-    if (event.organizer.toString() !== userId) {
-      res
-        .status(403)
-        .json({
-          message: "Access denied ❌ You are not the organizer of this event.",
-        });
+    if (role == "organizer" && event.organizer.toString() !== userId) {
+      res.status(403).json({
+        message: "Access denied ❌ You are not the organizer of this event.",
+      });
       return;
     }
 
