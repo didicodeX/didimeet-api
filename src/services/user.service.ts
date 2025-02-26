@@ -23,73 +23,37 @@ export class UserService {
   }
 
   async getUserById(id: string) {
-    return await UserModel.findById(id);
+    return await UserModel.findById(id).select("-password -__v");
   }
 
-  async updateUserMe(id: string, updateData: UserInterface) {
+  async updateUser(id: string, updateData: UserInterface) {
     // Vérifier si l'utilisateur existe
     const user = await UserModel.findById(id);
     if (!user) {
       throw new Error("Utilisateur introuvable ❌");
     }
-
-    // // Appliquer les mises à jour
-    // Object.assign(user, updateData);
-    // await user.save();
-
-    const updatedUser = await UserModel.findByIdAndUpdate(
-      id,
+    if (updateData.password) {
+      updateData.password = await bcrypt.hash(updateData.password, 10);
+    }
+    const updatedUser = await UserModel.updateOne(
+      { user },
       { $set: updateData },
       { new: true }
     );
 
-    if (!updatedUser) {
-      throw new Error("Utilisateur non trouvé ❌");
-    }
-
     return updatedUser;
-  }
-
-  async updateUserByAdmin(id: string, updateData: UserInterface) {
-    const existingUser = await UserModel.findById(id);
-    if (!existingUser) {
-      throw new Error("Utilisateur introuvable ❌");
-    }
-
-    if (updateData.password) {
-      updateData.password = await bcrypt.hash(updateData.password, 10);
-    }
-    return await UserModel.findByIdAndUpdate(id, updateData, { new: true });
-  }
-
-  async updateUserFull(id: string, userData: UserInterface) {
-    const existingUser = await UserModel.findById(id);
-    if (!existingUser) {
-      throw new Error("Utilisateur introuvable ❌");
-    }
-
-    if (userData.password) {
-      userData.password = await bcrypt.hash(userData.password, 10);
-    }
-
-    const updatedUser = await UserModel.findByIdAndUpdate(
-      id,
-      userData,
-      {overwrite:true, new: true, runValidators: true}
-    )
-    
-    return updatedUser;
-  }
+  } 
 
   async deleteUser(id: string) {
-    if (!isValidObjectId(id)) {
-      throw new Error("ID utilisateur invalide");
-    }
+    const existingUser = await UserModel.findById(id);
+    console.log("Utilisateur trouvé ?", existingUser);
 
     const deletedUser = await UserModel.findByIdAndDelete(id);
     if (!deletedUser) {
       throw new Error("Utilisateur non trouvé");
     }
+
+    return deletedUser;
   }
 
   async createSuperAdminIfNotExists() {

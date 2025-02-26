@@ -10,8 +10,3 @@ export const authorise = (roles: string[]) => {
     next();
   };
 };
-
-/**{
-"email": "sung@didicode.com",
-"password": "123456"
-} */

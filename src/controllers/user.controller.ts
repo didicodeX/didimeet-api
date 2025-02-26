@@ -9,7 +9,7 @@ export class UserController {
     this.userService = userService;
   }
 
-  async createUser(req: Request, res: Response) {
+  async createUserByAdmin(req: Request, res: Response) {
     try {
       const { name, email, password } = req.body;
       const user = await this.userService.createUser(name, email, password);
@@ -19,7 +19,7 @@ export class UserController {
     }
   }
 
-  async getUsers(req: Request, res: Response) {
+  async getUsersByAdmin(req: Request, res: Response) {
     try {
       const users = await this.userService.getUsers();
       res.json(users);
@@ -28,7 +28,7 @@ export class UserController {
     }
   }
 
-  async getUserById(req: Request, res: Response) {
+  async getUserByAdmin(req: Request, res: Response) {
     try {
       const user = await this.userService.getUserById(req.params.id);
       res.json(user);
@@ -37,22 +37,9 @@ export class UserController {
     }
   }
 
-  async updateUserMe(req: AuthRequest, res: Response) {
-    try {
-      const updatedUser = await this.userService.updateUserMe(
-        req.user.id,
-        req.body
-      );
-
-      res.json({ message: "Profil mis à jour ✅", user: updatedUser });
-    } catch (error: any) {
-      res.status(400).json({ message: error.message });
-    }
-  }
-
   async updateUserByAdmin(req: AuthRequest, res: Response) {
     try {
-      const updatedUser = await this.userService.updateUserByAdmin(
+      const updatedUser = await this.userService.updateUser(
         req.params.id,
         req.body
       );
@@ -68,22 +55,48 @@ export class UserController {
     }
   }
 
-  // async updateUserFull(req: Request, res: Response) {
-  //   try {
-  //     const updatedUser = await this.userService.updateUserFull(
-  //       req.params.id,
-  //       req.body
-  //     );
-  //     res.json(updatedUser);
-  //   } catch (error: any) {
-  //     res.status(500).json({ message: "Erreur serveur", error: error.message });
-  //   }
-  // }
-
-  async deleteUser(req: Request, res: Response) {
+  async getOwnProfile(req: AuthRequest, res: Response) {
     try {
-      const deletedUser = await this.userService.deleteUser(req.params.id);
-      res.json({ message: "Utilisateur supprimé avec succès ✅", deletedUser });
+      const userId = req.user.id; // ✅ ID récupéré depuis le token
+      console.log(userId);
+      
+      const user = await this.userService.getUserById(userId); // 🔒 On exclut le mot de passe
+      console.log(user);
+      
+      if (!user) {
+         res.status(404).json({ message: "Utilisateur non trouvé ❌" });
+         return
+      }
+  
+      res.status(200).json(user);
+    } catch (error:any) {
+      res.status(500).json({ message: "Erreur serveur 🚨", error: error.message });
+    }
+  }
+  
+
+  async updateOwnProfile(req: AuthRequest, res: Response) {
+    try {
+      const updatedUser = await this.userService.updateUser(
+        req.user.id,
+        req.body
+      );
+
+      res.json({ message: "Profil mis à jour ✅", user: updatedUser });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
+  async deleteOwnAccount(req: AuthRequest, res: Response) {
+    try {
+      const deletedUser = await this.userService.deleteUser(req.user.id);
+      if (!deletedUser) {
+         res.status(404).json({ message: "Utilisateur introuvable ❌" });
+         return
+      }
+
+      res.status(200).json({ message: "Compte supprimé avec succès ✅", deletedUser });
     } catch (error: any) {
       if (error.message === "ID utilisateur invalide") {
         res.status(400).json({ message: error.message });
@@ -97,7 +110,24 @@ export class UserController {
     }
   }
 
-  async updateUserRole(req: Request, res: Response) {
+  async deleteUserByAdmin(req: Request, res: Response) {
+    try {
+      const deletedUser = await this.userService.deleteUser(req.params.id);
+      res.status(200).json({ message: "Utilisateur supprimé avec succès ✅", deletedUser });
+    } catch (error: any) {
+      if (error.message === "ID utilisateur invalide") {
+        res.status(400).json({ message: error.message });
+        return;
+      }
+      if (error.message === "Utilisateur non trouvé") {
+        res.status(404).json({ message: error.message });
+        return;
+      }
+      res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+  }
+
+  async updateUserRoleBySuperadmin(req: Request, res: Response) {
     try {
       const { role } = req.body;
       const { id } = req.params;
