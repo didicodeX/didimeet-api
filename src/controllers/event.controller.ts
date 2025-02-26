@@ -82,22 +82,13 @@ export class EventController {
     }
   }
 
-  async updateEventPartial(req: Request, res: Response) {
+  async updateEvent(req: Request, res: Response) {
     try {
-      const updatedEvent = await this.eventService.updateEventPartial(
+      const updatedEvent = await this.eventService.updateEvent(
         req.params.id,
         req.body
       );
-      res.json(updatedEvent)
-    } catch (error: Error | any) {
-      res.status(403).json({ message: error.message });
-    }
-  }
-
-  async updateEventFull(req: Request, res: Response){
-    try {
-      const updatedEvent = await this.eventService.updateEventFull(req.params.id,req.body)
-      res.json(updatedEvent)
+      res.json(updatedEvent);
     } catch (error: Error | any) {
       res.status(403).json({ message: error.message });
     }

@@ -58,10 +58,8 @@ export class UserController {
   async getOwnProfile(req: AuthRequest, res: Response) {
     try {
       const userId = req.user.id; // ✅ ID récupéré depuis le token
-      console.log(userId);
-      
-      const user = await this.userService.getUserById(userId); // 🔒 On exclut le mot de passe
-      console.log(user);
+
+      const user = await this.userService.getUserById(userId); 
       
       if (!user) {
          res.status(404).json({ message: "Utilisateur non trouvé ❌" });

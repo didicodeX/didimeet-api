@@ -30,13 +30,12 @@ router.get("/my-all-events", authenticate, async (req, res) =>
 
 router.get("/:id", (req, res) => eventController.getEvent(req, res));
 
-router.delete(
-  "/:id",
-  authenticate, 
-  isEventOrganizer,
-  (req, res) => eventController.deleteEvent(req, res)
+router.delete("/:id", authenticate, isEventOrganizer, (req, res) =>
+  eventController.deleteEvent(req, res)
 );
 
-// router.put("/:id", isEventOrganizer, (req,res) => eventController)
+router.patch("/:id", authenticate, isEventOrganizer, (req, res) =>
+  eventController.updateEvent(req, res)
+);
 
 export default router;

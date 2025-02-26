@@ -87,7 +87,7 @@ export class EventService {
     return await EventModel.findByIdAndDelete(eventId);
   }
 
-  async updateEventPartial(id: string, eventData: EventInterface) {
+  async updateEvent(id: string, eventData: EventInterface) {
     return await EventModel.findByIdAndUpdate(
       id,
       { $set: eventData },
@@ -95,11 +95,5 @@ export class EventService {
     );
   }
 
-  async updateEventFull(id: string, eventData: EventInterface) {
-    return EventModel.findByIdAndUpdate(id, eventData, {
-      new: true,
-      overwrite: true,
-    });
-  }
 
 }
