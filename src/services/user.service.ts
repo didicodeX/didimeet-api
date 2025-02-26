@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import { isValidObjectId } from "mongoose";
 import { UserInterface } from "../interfaces";
 import { UserModel } from "../models/user.model";
-import { EventModel } from "../models/event.model";
 
 export class UserService {
   async createUser(name: string, email: string, password: string) {
@@ -27,7 +26,39 @@ export class UserService {
     return await UserModel.findById(id);
   }
 
-  async updateUserPartial(id: string, updateData: UserInterface) {
+  async updateUserMe(id: string, updateData: UserInterface) {
+    // Vérifier si l'utilisateur existe
+    const user = await UserModel.findById(id);
+    if (!user) {
+      throw new Error("Utilisateur introuvable ❌");
+    }
+
+    // // Appliquer les mises à jour
+    // Object.assign(user, updateData);
+    // await user.save();
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      throw new Error("Utilisateur non trouvé ❌");
+    }
+
+    return updatedUser;
+  }
+
+  async updateUserByAdmin(id: string, updateData: UserInterface) {
+    const existingUser = await UserModel.findById(id);
+    if (!existingUser) {
+      throw new Error("Utilisateur introuvable ❌");
+    }
+
+    if (updateData.password) {
+      updateData.password = await bcrypt.hash(updateData.password, 10);
+    }
     return await UserModel.findByIdAndUpdate(id, updateData, { new: true });
   }
 
@@ -41,10 +72,13 @@ export class UserService {
       userData.password = await bcrypt.hash(userData.password, 10);
     }
 
-    return await UserModel.findByIdAndUpdate(id, userData, {
-      new: true,
-      overwrite: true,
-    });
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      id,
+      userData,
+      {overwrite:true, new: true, runValidators: true}
+    )
+    
+    return updatedUser;
   }
 
   async deleteUser(id: string) {
@@ -90,7 +124,4 @@ export class UserService {
 
     return updatedUser;
   }
-
-
-  
 }

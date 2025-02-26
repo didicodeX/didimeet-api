@@ -1,10 +1,9 @@
 import { EventModel } from "../models/event.model.js";
 import { EventInterface } from "../interfaces/event.interface.js";
-import { UserModel } from "../models/user.model.js";
 import { RegistrationModel } from "../models/registration.model.js";
 
 export class EventService {
-  async createEvent(userId:string,eventData: EventInterface) {
+  async createEvent(userId: string, eventData: EventInterface) {
     const { title, date } = eventData;
 
     // 🔍 Vérifier si l'événement existe déjà
@@ -18,14 +17,11 @@ export class EventService {
       throw new Error("La date doit être dans le futur");
     }
 
-
-    // eventData.organizer = 
-
     // ✅ Créer l'événement
     return await EventModel.create({
       ...eventData,
       organizer: userId, // 🚀 Ajout automatique de l'organisateur
-    });;
+    });
   }
 
   async getEvents() {
@@ -48,8 +44,8 @@ export class EventService {
       user: userId,
       status: "confirmed", // Filtrer uniquement les inscriptions validées
     }).populate("event");
-  // console.log(registrations);
-  
+    // console.log(registrations);
+
     // Extraire uniquement les événements
     return registrations.map((r) => r.event);
   }
@@ -58,13 +54,12 @@ export class EventService {
   async getAllEventsForUser(userId: string) {
     const createdEvents = await this.getEventsCreatedByUser(userId);
     const registeredEvents = await this.getEventsForUser(userId);
-  
+
     return {
       created: createdEvents,
       registered: registeredEvents,
     };
   }
-  
 
   async getUserByEmail(email: string) {
     return await EventModel.findOne({ email });
@@ -76,14 +71,35 @@ export class EventService {
     if (!event) {
       throw new Error("Événement introuvable ❌");
     }
-  
-    // Vérifier si l'utilisateur est autorisé à supprimer l'événement
-    if (userRole === "organizer" && event.organizer.toString() !== userId) {
-      throw new Error("Vous ne pouvez pas supprimer un événement dont vous n'êtes pas l'auteur ❌");
+
+    // Vérifier si l'utilisateur est autorisé
+    const isOrganizer =
+      event.organizer && event.organizer.toString() === userId;
+    const isAdmin = userRole === "superadmin" || userRole === "admin";
+
+    if (!isAdmin && !isOrganizer) {
+      throw new Error(
+        "Accès refusé ❌ : Vous ne pouvez pas supprimer cet événement."
+      );
     }
-  
+
     // Supprimer l'événement
     return await EventModel.findByIdAndDelete(eventId);
   }
-  
+
+  async updateEventPartial(id: string, eventData: EventInterface) {
+    return await EventModel.findByIdAndUpdate(
+      id,
+      { $set: eventData },
+      { new: true }
+    );
+  }
+
+  async updateEventFull(id: string, eventData: EventInterface) {
+    return EventModel.findByIdAndUpdate(id, eventData, {
+      new: true,
+      overwrite: true,
+    });
+  }
+
 }

@@ -11,8 +11,8 @@ export class EventController {
 
   async createEvent(req: AuthRequest, res: Response) {
     try {
-      const userId =  req.user.id;
-      const event = await this.eventService.createEvent(userId,req.body);
+      const userId = req.user.id;
+      const event = await this.eventService.createEvent(userId, req.body);
       res.status(201).json(event);
     } catch (error: Error | any) {
       res.status(500).json({ message: error.message });
@@ -28,7 +28,7 @@ export class EventController {
     }
   }
 
-  async getEventsForUser(req:AuthRequest,res:Response){
+  async getEventsForUser(req: AuthRequest, res: Response) {
     try {
       const events = await this.eventService.getEventsForUser(req.user.id);
       res.json(events);
@@ -36,12 +36,12 @@ export class EventController {
       res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
   }
-  
-  async getAllEventsForUser(req:AuthRequest,res:Response){
+
+  async getAllEventsForUser(req: AuthRequest, res: Response) {
     try {
       const events = await this.eventService.getAllEventsForUser(req.user.id);
       res.json(events);
-    } catch (error:any) {
+    } catch (error: any) {
       res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
   }
@@ -54,23 +54,52 @@ export class EventController {
       res.status(500).json({ message: error.message });
     }
   }
-  async getEventsCreatedByUser(req: AuthRequest, res:Response){
+
+  async getEventsCreatedByUser(req: AuthRequest, res: Response) {
     try {
-      const events = await this.eventService.getEventsCreatedByUser(req.user.id)
-      res.json(events)
+      const events = await this.eventService.getEventsCreatedByUser(
+        req.user.id
+      );
+      res.json(events);
     } catch (error: any) {
       res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
   }
+
   async deleteEvent(req: AuthRequest, res: Response) {
     try {
-      console.log("req.user.id : ", req.user.id, "\nreq.params.id : ", req.params.id);
-  
-      const deletedEvent = await this.eventService.deleteEvent(req.params.id, req.user.id, req.user.role);
-      res.json({ message: "Événement supprimé avec succès ✅", event: deletedEvent });
+      const deletedEvent = await this.eventService.deleteEvent(
+        req.params.id,
+        req.user.id,
+        req.user.role
+      );
+      res.json({
+        message: "Événement supprimé avec succès ✅",
+        event: deletedEvent,
+      });
     } catch (error: Error | any) {
       res.status(403).json({ message: error.message });
     }
   }
-  
+
+  async updateEventPartial(req: Request, res: Response) {
+    try {
+      const updatedEvent = await this.eventService.updateEventPartial(
+        req.params.id,
+        req.body
+      );
+      res.json(updatedEvent)
+    } catch (error: Error | any) {
+      res.status(403).json({ message: error.message });
+    }
+  }
+
+  async updateEventFull(req: Request, res: Response){
+    try {
+      const updatedEvent = await this.eventService.updateEventFull(req.params.id,req.body)
+      res.json(updatedEvent)
+    } catch (error: Error | any) {
+      res.status(403).json({ message: error.message });
+    }
+  }
 }

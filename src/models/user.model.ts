@@ -8,8 +8,8 @@ const UserSchema = new Schema<UserInterface>(
     password: { type: String },
     role: {
       type: String,
-      enum: ["superadmin","Admin", "Organizer", "Participant"],
-      default: "Participant",
+      enum: ["superadmin", "admin", "user"],
+      default: "user",
     },
   },
   { timestamps: true }

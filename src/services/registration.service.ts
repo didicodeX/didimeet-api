@@ -1,7 +1,6 @@
 import { RegistrationModel } from "../models/registration.model";
 import { EventModel } from "../models/event.model";
 import { UserModel } from "../models/user.model";
-import { RegistrationInterface } from "../interfaces/registration.interface";
 
 export class RegistrationService {
   /**

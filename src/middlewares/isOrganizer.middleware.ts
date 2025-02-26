@@ -12,12 +12,12 @@ export const isOrganizer = async (
     const userId = req.user.id; // L'ID de l'utilisateur connecté (extrait du JWT)
     const role = req.user.role;
 
-    // console.log(
-    //   "\neventId : \n",
-    //   eventId,
-    //   "\nuserId : \n",
-    //   userId
-    // );
+    console.log(
+      "\neventId : \n",
+      eventId,
+      "\nuserId : \n",
+      userId
+    );
 
     // Vérifier si l'événement existe
     const event = await EventModel.findById(eventId);

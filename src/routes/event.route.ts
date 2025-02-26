@@ -3,7 +3,7 @@ import { EventController } from "../controllers/event.controller";
 import { EventService } from "../services/event.service";
 import { authenticate } from "../middlewares/auth.middleware";
 import { authorise } from "../middlewares/role.middleware";
-import { isOrganizer } from "../middlewares/isOrganizer.middleware";
+import { isEventOrganizer } from "../middlewares/isEventOrganizer.middleware";
 
 const router = Router();
 
@@ -32,10 +32,11 @@ router.get("/:id", (req, res) => eventController.getEvent(req, res));
 
 router.delete(
   "/:id",
-  authenticate,
-  authorise(["superadmin", "admin", "organizer"]),
-  isOrganizer,
+  authenticate, 
+  isEventOrganizer,
   (req, res) => eventController.deleteEvent(req, res)
 );
+
+// router.put("/:id", isEventOrganizer, (req,res) => eventController)
 
 export default router;
