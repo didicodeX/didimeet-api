@@ -3,9 +3,9 @@ import { AuthService } from "../services/auth.service";
 import { AuthRequest } from "../middlewares/auth.middleware";
 
 export class AuthController {
-  private authService : AuthService;
+  private authService: AuthService;
 
-  constructor(authService: AuthService){
+  constructor(authService: AuthService) {
     this.authService = authService;
   }
 
@@ -18,10 +18,11 @@ export class AuthController {
       res.status(400).json({ message: error.message });
     }
   }
-  
+
   async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
+
       const { user, accessToken, refreshToken } = await this.authService.login(
         email,
         password
@@ -49,6 +50,7 @@ export class AuthController {
           id: user._id,
           name: user.name,
           email: user.email,
+          role: user.role,
         },
       });
     } catch (error: any) {

@@ -1,34 +1,32 @@
 import { RegistrationModel } from "../models/registration.model";
 import { EventModel } from "../models/event.model";
 import { UserModel } from "../models/user.model";
-import { RegistrationInterface } from "../interfaces/registration.interface";
 
 export class RegistrationService {
   /**
    * Inscrire un utilisateur à un événement
    */
-  async registerUser(registrationData: RegistrationInterface) {
+  async registerUser(userId: string, eventId: string) {
     // Vérifier si l'événement existe
-    const event = await EventModel.findById(registrationData.event);
+    const event = await EventModel.findById(eventId);
     if (!event) throw new Error("Event not found");
 
     // Vérifier si l'utilisateur existe
-    const user = await UserModel.findById(registrationData.user);
+    const user = await UserModel.findById(userId);
     if (!user) throw new Error("User not found");
 
     // Vérifier si l'utilisateur est déjà inscrit
     const existingRegistration = await RegistrationModel.findOne({
-      user: registrationData.user,
-      event: registrationData.event,
+      user: userId,
+      event: eventId,
     });
 
     if (existingRegistration)
       throw new Error("User already registered for this event");
 
-
     const registration = await RegistrationModel.create({
-      user: registrationData.user,
-      event: registrationData.event,
+      user: userId,
+      event: eventId,
       status: "pending", // 🚀 L'inscription est en attente
     });
     return registration;
@@ -51,39 +49,67 @@ export class RegistrationService {
     return registration;
   }
 
-  async updateRegistrationStatus(registrationData: RegistrationInterface) {
-    const eventId = registrationData.event;
-    const userId = registrationData.user;
-    const status =registrationData.status;
+  async updateRegistrationStatus(
+    registrationId: string,
+    organizerId: string,
+    status: string,
+    userRole: string
+  ) {
+    // 🔍 Vérifier si l'inscription existe
+    const registration = await RegistrationModel.findById(registrationId);
+    if (!registration) {
+      throw new Error("Inscription non trouvée ❌");
+    }
 
-    const event = await EventModel.findById(eventId);
-    if (!event) throw new Error("Event not found");
+    // 🔍 Vérifier si l'événement existe et récupérer l'organisateur
+    const event = await EventModel.findById(registration.event);
+    if (!event) {
+      throw new Error("Événement non trouvé ❌");
+    }
 
+    // 🔒 Vérifier si l'utilisateur est bien l'organisateur de l'événement
+    const isOrganizer =
+      event.organizer && event.organizer.toString() === organizerId;
+    const isAdmin = userRole === "superadmin" || userRole === "admin";
 
-    // verification de l'inscription
-    const registration = await RegistrationModel.findOne({
-      event: eventId,
-      user: userId,
-    });
-    if (!registration) throw new Error("Registration not found");
+    if (!isAdmin && !isOrganizer) {
+      throw new Error(
+        "Accès refusé ❌ : Vous ne pouvez pas supprimer cet événement."
+      );
+    }
 
-    // Mettre à jour le statut
+    // ✅ Mettre à jour le statut
     registration.status = status;
     await registration.save();
 
     return registration;
   }
 
-    /**
+  /**
    * 🔹 Récupérer tous les utilisateurs inscrits à un événement
    */
-    async getUsersForEvent(eventId: string) {
-      // Chercher les inscriptions liées à cet événement
-      const registrations = await RegistrationModel.find({ event: eventId }).populate("user", "name email");
-  
-      // Extraire uniquement les utilisateurs
-      const users = registrations.map(registration => registration.user);
-  
-      return users;
+  async getUsersForEvent(eventId: string) {
+    // Chercher les inscriptions liées à cet événement
+    const registrations = await RegistrationModel.find({
+      event: eventId,
+    }).populate("user", "name email");
+    // console.log(registrations);
+
+    // Extraire uniquement les utilisateurs
+    const users = registrations.map((registration) => registration.user);
+
+    return users;
+  }
+
+  async getRegistrationsByEvent(eventId: string) {
+    const registrations = await RegistrationModel.find({ event: eventId })
+     .populate("user", "name email")
+    //  .select("user status");
+
+    if (!registrations.length) {
+      throw new Error("Aucune inscription trouvée ❌");
     }
+
+    return registrations;
+  }
 }

@@ -3,6 +3,7 @@ import { Types } from "mongoose";
 export interface EventInterface {
   title: string;
   date: Date;
-  organizer: Types.ObjectId;
+  description: string,
   status: string;
+  organizer: Types.ObjectId;
 }
