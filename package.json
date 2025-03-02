@@ -16,7 +16,7 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc && mkdir -p build/doc && cp doc/swagger.json build/doc/",
+    "build": "tsc && xcopy src\\doc\\swagger.json build\\doc\\ /Y",
     "dev": "nodemon ./build/main.js",
     "start": "node ./build/main.js"
   },
