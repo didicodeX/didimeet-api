@@ -94,6 +94,4 @@ export class EventService {
       { new: true }
     );
   }
-
-
 }

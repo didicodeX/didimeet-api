@@ -2,7 +2,6 @@ import { Router } from "express";
 import { EventController } from "../controllers/event.controller";
 import { EventService } from "../services/event.service";
 import { authenticate } from "../middlewares/auth.middleware";
-import { authorise } from "../middlewares/role.middleware";
 import { isEventOrganizer } from "../middlewares/isEventOrganizer.middleware";
 
 const router = Router();
