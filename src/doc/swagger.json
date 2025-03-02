@@ -1,0 +1,243 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API de gestion d'événements",
+    "version": "1.0.0",
+    "description": "API RESTful pour gérer des événements, les inscriptions et les commentaires."
+  },
+  "servers": [
+    {
+      "url": "https://api.eventsmanager.com",
+      "description": "Serveur de production"
+    },
+    {
+      "url": "http://localhost:4000",
+      "description": "Serveur local"
+    }
+  ],
+  "tags": [
+    { "name": "Utilisateurs", "description": "Gestion des utilisateurs" },
+    { "name": "Authentification", "description": "Inscription, connexion et gestion des sessions" },
+    { "name": "Événements", "description": "Gestion des événements" },
+    { "name": "Inscriptions", "description": "Gestion des inscriptions aux événements" },
+    { "name": "Commentaires", "description": "Gestion des commentaires sur les événements" }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Authentification"],
+        "summary": "Inscription d'un utilisateur",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/User" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Utilisateur créé avec succès" },
+          "400": { "description": "Erreur lors de l'inscription" }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Authentification"],
+        "summary": "Connexion d'un utilisateur",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "example": "user@example.com" },
+                  "password": { "type": "string", "example": "password123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Connexion réussie, retourne un token JWT" },
+          "401": { "description": "Identifiants invalides" }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Authentification"],
+        "summary": "Déconnexion de l'utilisateur",
+        "responses": {
+          "200": { "description": "Déconnexion réussie" }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": ["Authentification"],
+        "summary": "Récupérer le profil de l'utilisateur connecté",
+        "responses": {
+          "200": { "description": "Informations du profil" },
+          "401": { "description": "Utilisateur non authentifié" }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": ["Utilisateurs"],
+        "summary": "Récupérer son propre profil",
+        "responses": {
+          "200": { "description": "Profil utilisateur" },
+          "401": { "description": "Utilisateur non authentifié" }
+        }
+      },
+      "patch": {
+        "tags": ["Utilisateurs"],
+        "summary": "Modifier son propre profil",
+        "responses": {
+          "200": { "description": "Profil mis à jour" },
+          "401": { "description": "Utilisateur non authentifié" }
+        }
+      },
+      "delete": {
+        "tags": ["Utilisateurs"],
+        "summary": "Supprimer son propre compte",
+        "responses": {
+          "200": { "description": "Compte supprimé" },
+          "401": { "description": "Utilisateur non authentifié" }
+        }
+      }
+    },
+    "/events": {
+      "get": {
+        "tags": ["Événements"],
+        "summary": "Récupérer tous les événements",
+        "responses": {
+          "200": { "description": "Liste des événements" }
+        }
+      },
+      "post": {
+        "tags": ["Événements"],
+        "summary": "Créer un nouvel événement",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Event" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Événement créé avec succès" }
+        }
+      }
+    },
+    "/events/{id}": {
+      "get": {
+        "tags": ["Événements"],
+        "summary": "Récupérer un événement par ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Détails de l'événement" },
+          "404": { "description": "Événement non trouvé" }
+        }
+      },
+      "patch": {
+        "tags": ["Événements"],
+        "summary": "Modifier un événement",
+        "responses": {
+          "200": { "description": "Événement mis à jour" }
+        }
+      },
+      "delete": {
+        "tags": ["Événements"],
+        "summary": "Supprimer un événement",
+        "responses": {
+          "200": { "description": "Événement supprimé" }
+        }
+      }
+    },
+    "/registrations": {
+      "post": {
+        "tags": ["Inscriptions"],
+        "summary": "S'inscrire à un événement",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Registration" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Inscription réussie" }
+        }
+      }
+    },
+    "/comments": {
+      "post": {
+        "tags": ["Commentaires"],
+        "summary": "Ajouter un commentaire à un événement",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Comment" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Commentaire ajouté avec succès" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string" },
+          "role": { "type": "string", "enum": ["superadmin", "admin", "user"], "default": "user" }
+        }
+      },
+      "Event": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "date": { "type": "string", "format": "date-time" },
+          "description": { "type": "string" },
+          "organizer": { "type": "string", "format": "uuid" },
+          "status": { "type": "string", "enum": ["Pending", "Confirmed", "Cancelled"], "default": "Pending" }
+        }
+      },
+      "Registration": {
+        "type": "object",
+        "properties": {
+          "user": { "type": "string", "format": "uuid" },
+          "event": { "type": "string", "format": "uuid" },
+          "status": { "type": "string", "enum": ["pending", "confirmed", "rejected"], "default": "pending" }
+        }
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "user": { "type": "string", "format": "uuid" },
+          "event": { "type": "string", "format": "uuid" },
+          "content": { "type": "string" }
+        }
+      }
+    }
+  }
+}
