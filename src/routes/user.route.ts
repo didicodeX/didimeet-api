@@ -7,24 +7,42 @@ const router = Router();
 const userService = new UserService();
 const userController = new UserController(userService);
 
+// 📌 🚀 **Actions Utilisateur**
+router.get("/me", (req, res) =>
+  userController.getOwnProfile(req, res) // 🔍 Récupérer son propre profil
+);
+
+router.patch("/me", (req, res) =>
+  userController.updateOwnProfile(req, res) // ✏️ Modifier SON propre profil
+);
+
+router.delete("/me", (req, res) =>
+  userController.deleteOwnAccount(req, res) // 🗑 Supprimer SON propre compte
+);
+
+// 📌 🚀 **Actions Admin/Superadmin**
+router.post("/", authorise(["superadmin", "admin"]), (req, res) =>
+  userController.createUserByAdmin(req, res) // 👑 Création d’un utilisateur par un admin/superadmin
+);
+
 router.get("/", authorise(["superadmin", "admin"]), (req, res) =>
-  userController.getUsers(req, res)
+  userController.getUsersByAdmin(req, res) // 🔍 Récupérer tous les utilisateurs
 );
 
 router.get("/:id", authorise(["superadmin", "admin"]), (req, res) =>
-  userController.getUserById(req, res)
+  userController.getUserByAdmin(req, res) // 🔍 Récupérer un utilisateur spécifique (admin)
 );
 
-router.put("/:id", authorise(["superadmin", "admin"]), (req, res) =>
-  userController.updateUserFull(req, res)
+router.patch("/:id", authorise(["superadmin", "admin"]), (req, res) =>
+  userController.updateUserByAdmin(req, res) // ✏️ Modifier un utilisateur par un admin
 );
 
-router.patch("/:id", (req, res) => userController.updateUserPartial(req, res));
+router.delete("/:id", authorise(["superadmin", "admin"]), (req, res) =>
+  userController.deleteUserByAdmin(req, res) // 🗑 Supprimer un utilisateur (admin)
+);
 
-router.delete("/:id", (req, res) => userController.deleteUser(req, res));
-
-router.patch("/users/:id/role", authorise(["superadmin"]), (req, res) =>
-  userController.updateUserRole(req, res)
+router.patch("/:id/role", authorise(["superadmin"]), (req, res) =>
+  userController.updateUserRoleBySuperadmin(req, res) // 🎩 Modifier le rôle d’un utilisateur (superadmin)
 );
 
 

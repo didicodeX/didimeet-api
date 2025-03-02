@@ -60,3 +60,6 @@ https://dev.to/alexmercedcoder/mongodb-relationships-using-mongoose-in-nodejs-54
 https://medium.com/@brandon.lau86/one-to-many-relationships-with-mongodb-and-mongoose-in-node-express-d5c9d23d93c2
 https://dev.to/oluseyeo/how-to-create-relationships-with-mongoose-and-node-js-11c8
 https://medium.com/@arif.rahman.rhm/how-to-build-a-rest-api-with-mongodb-and-mongoose-in-node-js-tips-and-tricks-157bfaed33ce
+
+PUT ET PATCH 
+https://dev.wanago.io/2021/09/27/api-nestjs-put-patch-mongodb-mongoose/

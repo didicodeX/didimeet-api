@@ -2,8 +2,7 @@ import { Router } from "express";
 import { EventController } from "../controllers/event.controller";
 import { EventService } from "../services/event.service";
 import { authenticate } from "../middlewares/auth.middleware";
-import { authorise } from "../middlewares/role.middleware";
-import { isOrganizer } from "../middlewares/isOrganizer.middleware";
+import { isEventOrganizer } from "../middlewares/isEventOrganizer.middleware";
 
 const router = Router();
 
@@ -30,12 +29,12 @@ router.get("/my-all-events", authenticate, async (req, res) =>
 
 router.get("/:id", (req, res) => eventController.getEvent(req, res));
 
-router.delete(
-  "/:id",
-  authenticate,
-  authorise(["superadmin", "admin", "organizer"]),
-  isOrganizer,
-  (req, res) => eventController.deleteEvent(req, res)
+router.delete("/:id", authenticate, isEventOrganizer, (req, res) =>
+  eventController.deleteEvent(req, res)
+);
+
+router.patch("/:id", authenticate, isEventOrganizer, (req, res) =>
+  eventController.updateEvent(req, res)
 );
 
 export default router;
