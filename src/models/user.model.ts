@@ -11,6 +11,8 @@ const UserSchema = new Schema<UserInterface>(
       enum: ["superadmin", "admin", "user"],
       default: "user",
     },
+    // 🔹 Relation One-to-Many : Un utilisateur peut créer plusieurs événements
+    events: [{ type: Schema.Types.ObjectId, ref: "Event" }],
   },
   { timestamps: true }
 );

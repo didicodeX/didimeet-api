@@ -14,10 +14,10 @@ export class CommentRepository {
       .populate("user", "name email")
       .populate({
         path: "event",
-        select: "title organizer", // ⚡ Récupérer uniquement le nom de l'événement et son organisateur
+        select: "title", // ⚡ Récupérer uniquement le nom de l'événement et son organisateur
         populate: {
           path: "organizer",
-          select: "name _id", // ⚡ Récupérer uniquement le nom et l'ID de l'organisateur
+          select: "name", // ⚡ Récupérer uniquement le nom et l'ID de l'organisateur
         },
       });
   }

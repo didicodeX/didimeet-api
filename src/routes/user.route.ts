@@ -33,6 +33,11 @@ router.get("/:id", authorise(["superadmin", "admin"]), (req, res) =>
   userController.getUserByAdmin(req, res) // 🔍 Récupérer un utilisateur spécifique (admin)
 );
 
+// Récupérer les événements créés par un user
+router.get("/:userId/events", authorise(["superadmin", "admin"]), (req, res) =>
+  userController.getEventByUserByAdmin(req, res) 
+);
+
 router.patch("/:id", authorise(["superadmin", "admin"]), (req, res) =>
   userController.updateUserByAdmin(req, res) // ✏️ Modifier un utilisateur par un admin
 );

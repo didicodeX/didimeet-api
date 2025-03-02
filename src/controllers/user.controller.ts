@@ -37,6 +37,15 @@ export class UserController {
     }
   }
 
+  async getEventByUserByAdmin(req:Request,res:Response){
+    try {
+      const user = await this.userService.getEventByUser(req.params.id);
+      res.json(user);
+    } catch (error: any) {
+      res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+  }
+
   async updateUserByAdmin(req: AuthRequest, res: Response) {
     try {
       const updatedUser = await this.userService.updateUser(

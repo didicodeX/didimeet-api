@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import { isValidObjectId } from "mongoose";
 import { UserInterface } from "../interfaces";
 import { UserModel } from "../models/user.model";
 
@@ -24,6 +23,10 @@ export class UserService {
 
   async getUserById(id: string) {
     return await UserModel.findById(id).select("-password -__v");
+  }
+
+  async getEventByUser(id: string){
+    return UserModel.findById(id).populate("events")
   }
 
   async updateUser(id: string, updateData: UserInterface) {
