@@ -8,7 +8,7 @@ import { authenticate } from "../middlewares/auth.middleware";
 const router = Router();
 
 router.get("/", (req: Request, res: Response) => {
-  res.send("<h1>Hello world</h1>");
+  res.send("<h1>Bienvenu sur l'api didimeet pour tester rendez-vous sur </h1>");
 });
 
 router.use("/events", eventRoutes);
