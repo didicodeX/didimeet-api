@@ -2,9 +2,11 @@ import { Request, Response } from "express";
 import { AuthService } from "../services/auth.service";
 import { AuthRequest } from "../middlewares/auth.middleware";
 
+const isProduction = process.env.NODE_ENV === "production";
+const cookieDomain = isProduction ? ".didicode.com" : "localhost"; // ✅ Corrige le domaine
+
 export class AuthController {
   private authService: AuthService;
-
   constructor(authService: AuthService) {
     this.authService = authService;
   }
@@ -31,16 +33,17 @@ export class AuthController {
       // Stocker les tokens dans les cookies
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        domain: "localhost",
+        secure: isProduction, // ✅ Secure = true en prod, false en dev
+        sameSite: "none", // ✅ Important pour éviter les blocages CORS
+        domain: cookieDomain, // ✅ Définit le bon domaine
         maxAge: 24 * 60 * 60 * 1000,
       });
+
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: true,
+        secure: isProduction,
         sameSite: "none",
-        domain: "localhost",
+        domain: cookieDomain,
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
