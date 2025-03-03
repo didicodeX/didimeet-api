@@ -3,13 +3,14 @@ import { EventController } from "../controllers/event.controller";
 import { EventService } from "../services/event.service";
 import { authenticate } from "../middlewares/auth.middleware";
 import { isEventOrganizer } from "../middlewares/isEventOrganizer.middleware";
+import upload from "../middlewares/upload";
 
 const router = Router();
 
 const eventService = new EventService();
 const eventController = new EventController(eventService);
 
-router.post("/", authenticate, (req, res) =>
+router.post("/", authenticate, upload.single("image"), (req, res) =>
   eventController.createEvent(req, res)
 );
 
