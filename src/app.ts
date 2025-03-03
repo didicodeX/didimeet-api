@@ -13,10 +13,14 @@ app.use(bodyParser.json());
 app.use(express.json()); // 🛠️ Active le middleware JSON
 app.use(cookieParser()); // 🛠️ Active le middleware cookie-parser
 
+const allowedOrigins =
+  process.env.NODE_ENV === "production"
+    ? ["https://didimeet.didicode.com"] // 🌍 En prod, autorise le frontend en ligne
+    : ["http://localhost:5173"]; // 💻 En dev, autorise le frontend local
+
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:4000"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: allowedOrigins || "http://localhost:4173",
     credentials: true,
   })
 );
