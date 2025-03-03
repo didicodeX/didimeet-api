@@ -90,7 +90,7 @@ export class EventService {
   async updateEvent(id: string, eventData: EventInterface) {
     return await EventModel.findByIdAndUpdate(
       id,
-      { $set: eventData },
+      eventData ,
       { new: true }
     );
   }

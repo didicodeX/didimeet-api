@@ -25,8 +25,8 @@ export class UserService {
     return await UserModel.findById(id).select("-password -__v");
   }
 
-  async getEventByUser(id: string){
-    return UserModel.findById(id).populate("events")
+  async getEventByUser(id: string) {
+    return UserModel.findById(id).populate("events");
   }
 
   async updateUser(id: string, updateData: UserInterface) {
@@ -38,14 +38,8 @@ export class UserService {
     if (updateData.password) {
       updateData.password = await bcrypt.hash(updateData.password, 10);
     }
-    const updatedUser = await UserModel.updateOne(
-      { user },
-      { $set: updateData },
-      { new: true }
-    );
-
-    return updatedUser;
-  } 
+    return await UserModel.findByIdAndUpdate(id, updateData, { new: true });
+  }
 
   async deleteUser(id: string) {
     const existingUser = await UserModel.findById(id);
