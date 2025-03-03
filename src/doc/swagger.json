@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://api.eventsmanager.com",
+      "url": "https://https://api.didimeet.didicode.com",
       "description": "Serveur de production"
     },
     {
@@ -17,10 +17,19 @@
   ],
   "tags": [
     { "name": "Utilisateurs", "description": "Gestion des utilisateurs" },
-    { "name": "Authentification", "description": "Inscription, connexion et gestion des sessions" },
+    {
+      "name": "Authentification",
+      "description": "Inscription, connexion et gestion des sessions"
+    },
     { "name": "Événements", "description": "Gestion des événements" },
-    { "name": "Inscriptions", "description": "Gestion des inscriptions aux événements" },
-    { "name": "Commentaires", "description": "Gestion des commentaires sur les événements" }
+    {
+      "name": "Inscriptions",
+      "description": "Gestion des inscriptions aux événements"
+    },
+    {
+      "name": "Commentaires",
+      "description": "Gestion des commentaires sur les événements"
+    }
   ],
   "paths": {
     "/auth/register": {
@@ -209,7 +218,11 @@
           "name": { "type": "string" },
           "email": { "type": "string", "format": "email" },
           "password": { "type": "string" },
-          "role": { "type": "string", "enum": ["superadmin", "admin", "user"], "default": "user" }
+          "role": {
+            "type": "string",
+            "enum": ["superadmin", "admin", "user"],
+            "default": "user"
+          }
         }
       },
       "Event": {
@@ -219,7 +232,11 @@
           "date": { "type": "string", "format": "date-time" },
           "description": { "type": "string" },
           "organizer": { "type": "string", "format": "uuid" },
-          "status": { "type": "string", "enum": ["Pending", "Confirmed", "Cancelled"], "default": "Pending" }
+          "status": {
+            "type": "string",
+            "enum": ["Pending", "Confirmed", "Cancelled"],
+            "default": "Pending"
+          }
         }
       },
       "Registration": {
@@ -227,7 +244,11 @@
         "properties": {
           "user": { "type": "string", "format": "uuid" },
           "event": { "type": "string", "format": "uuid" },
-          "status": { "type": "string", "enum": ["pending", "confirmed", "rejected"], "default": "pending" }
+          "status": {
+            "type": "string",
+            "enum": ["pending", "confirmed", "rejected"],
+            "default": "pending"
+          }
         }
       },
       "Comment": {

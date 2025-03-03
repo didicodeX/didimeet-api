@@ -5,5 +5,7 @@ export interface EventInterface {
   date: Date;
   description: string,
   status: string;
+  location: string;
+  image: string | null;
   organizer: Types.ObjectId;
 }

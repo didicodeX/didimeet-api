@@ -12,10 +12,26 @@ export class EventController {
   async createEvent(req: AuthRequest, res: Response) {
     try {
       const userId = req.user.id;
-      const event = await this.eventService.createEvent(userId, req.body);
-      res.status(201).json(event);
-    } catch (error: Error | any) {
-      res.status(500).json({ message: error.message });
+      const { title, description, date, location,status, organizer } = req.body;
+
+      // Vérifier si une image a été uploadée
+      const imageUrl = req.file ? req.file.path : null;
+
+      const newEvent = await this.eventService.createEvent(userId, {
+        title,
+        date,
+        description,
+        location,
+        image: imageUrl, // Stocker l’URL de l’image
+        status,
+        organizer
+      });
+
+      res.status(201).json(newEvent);
+    } catch (error:any) {
+      res
+        .status(500)
+        .json({ error: "Erreur lors de la création de l'événement", message: error.message });
     }
   }
 
