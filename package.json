@@ -1,14 +1,14 @@
 {
-  "name": "ems_api",
+  "name": "didimeet-api",
   "version": "1.0.0",
   "description": "api de systeme de gestion d'evenement",
-  "homepage": "https://github.com/RusselTano/EMS_api#readme",
+  "homepage": "https://github.com/RusselTano/didimeet-api#readme",
   "bugs": {
-    "url": "https://github.com/RusselTano/EMS_api/issues"
+    "url": "https://github.com/RusselTano/didimeet-api/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RusselTano/EMS_api.git"
+    "url": "git+https://github.com/RusselTano/didimeet-api.git"
   },
   "license": "ISC",
   "author": "didicode",
@@ -16,7 +16,7 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-"build": "tsc && cp src/doc/swagger.json build/doc/",
+    "build": "tsc && cp src/doc/swagger.json build/doc/",
     "dev": "nodemon ./build/main.js",
     "start": "node ./build/main.js"
   },
