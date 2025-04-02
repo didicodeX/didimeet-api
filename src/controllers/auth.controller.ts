@@ -13,13 +13,48 @@ export class AuthController {
 
   async register(req: Request, res: Response) {
     try {
-      const { name, email, password } = req.body;
-      await this.authService.register(name, email, password);
-      res.json({ message: "Compte créé avec succès ✅" });
+      const { name, email, password } = req.body
+  
+      // 🔥 Récupère tout ce que renvoie le service
+      const { user, accessToken, refreshToken } = await this.authService.register(
+        name,
+        email,
+        password
+      )
+  
+      // Stocker les tokens dans les cookies
+      res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: true, // ✅ Secure = true en prod, false en dev
+        sameSite: "none", // ✅ Important pour éviter les blocages CORS
+        domain: cookieDomain, // ✅ Définit le bon domaine
+        maxAge: 24 * 60 * 60 * 1000,
+      });
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        domain: cookieDomain,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
+  
+      // ✅ Retourner le user
+      res.status(201).json({
+        message: "Compte créé avec succès ✅",
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      })
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({ message: error.message })
     }
   }
+  
 
   async login(req: Request, res: Response) {
     try {
@@ -33,7 +68,7 @@ export class AuthController {
       // Stocker les tokens dans les cookies
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        secure: isProduction, // ✅ Secure = true en prod, false en dev
+        secure: true, // ✅ Secure = true en prod, false en dev
         sameSite: "none", // ✅ Important pour éviter les blocages CORS
         domain: cookieDomain, // ✅ Définit le bon domaine
         maxAge: 24 * 60 * 60 * 1000,
@@ -41,7 +76,7 @@ export class AuthController {
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: isProduction,
+        secure: true,
         sameSite: "none",
         domain: cookieDomain,
         maxAge: 7 * 24 * 60 * 60 * 1000,
